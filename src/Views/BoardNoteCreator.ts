@@ -18,7 +18,7 @@ export class BoardNoteCreator {
         const template = options?.newNoteTemplate || '';
 
         if (folder || template) {
-            void this.createNote(groupValue, subGroupValue, groupPropertyId, subGroupPropertyId, folder, template);
+            void this.createNote(groupValue, subGroupValue, groupPropertyId, subGroupPropertyId, folder, template, options?.newNoteOpen ?? false);
             return;
         }
 
@@ -46,7 +46,7 @@ export class BoardNoteCreator {
         }
     }
 
-    private async createNote(groupValue: unknown, subGroupValue: unknown, groupPropertyId: string | null | undefined, subGroupPropertyId: string | null | undefined, folderPath: string, templatePath: string): Promise<void> {
+    private async createNote(groupValue: unknown, subGroupValue: unknown, groupPropertyId: string | null | undefined, subGroupPropertyId: string | null | undefined, folderPath: string, templatePath: string, openAfterCreation = false): Promise<void> {
         const app = Services.app;
         const fileManager = app.fileManager as InternalFileManager;
         const folder = this.resolveFolder(folderPath);
@@ -75,7 +75,9 @@ export class BoardNoteCreator {
                 newFile = await fileManager.createNewMarkdownFile(folder, 'Untitled');
             }
 
-            await app.workspace.openLinkText(newFile.path, '', true);
+            if (openAfterCreation) {
+                await app.workspace.openLinkText(newFile.path, '', true);
+            }
             await this.assignGroupValues(newFile, groupValue, subGroupValue, groupPropertyId, subGroupPropertyId);
         } catch (e) {
             console.error('[BoardNoteCreator] Failed to create note', e);
