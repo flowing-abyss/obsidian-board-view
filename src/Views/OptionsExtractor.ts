@@ -20,6 +20,7 @@ export const BoardOptionKeys = {
     HIDE_IMAGE_PLACEHOLDER: 'hideImagePlaceholder',
     NEW_NOTE_FOLDER: 'newNoteFolder',
     NEW_NOTE_TEMPLATE: 'newNoteTemplate',
+    NEW_NOTE_OPEN: 'newNoteOpen',
 
     // Color Options (simplified)
     COLOR_HEADERS: 'colorHeaders',
@@ -45,6 +46,7 @@ export interface BoardOptions {
     hideImagePlaceholder?: boolean;
     newNoteFolder?: string;
     newNoteTemplate?: string;
+    newNoteOpen?: boolean;
 
     // Color Options
     colorHeaders?: boolean;
@@ -108,6 +110,7 @@ export class OptionsExtractor {
         options.hideImagePlaceholder = (this.config.get(BoardOptionKeys.HIDE_IMAGE_PLACEHOLDER) as boolean) || false;
         options.newNoteFolder = ((this.config.get(BoardOptionKeys.NEW_NOTE_FOLDER) as string[]) || [])[0] || '';
         options.newNoteTemplate = ((this.config.get(BoardOptionKeys.NEW_NOTE_TEMPLATE) as string[]) || [])[0] || '';
+        options.newNoteOpen = (this.config.get(BoardOptionKeys.NEW_NOTE_OPEN) as boolean) || false;
 
         // Color Options
         options.colorHeaders = (this.config.get(BoardOptionKeys.COLOR_HEADERS) as boolean) || true;

@@ -211,6 +211,13 @@ export default class BoardViewPlugin extends Plugin {
 							default: [],
 							description: 'Template file path. Supports Templater if installed (e.g. Templates/Task.md)',
 						},
+						{
+							type: 'toggle',
+							displayName: 'Open after creation',
+							key: BoardOptionKeys.NEW_NOTE_OPEN,
+							default: false,
+							description: 'Open the new note after creating it',
+						},
 					]
 				},
 			]),
