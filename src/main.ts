@@ -3,6 +3,7 @@ import { BoardViewSettingTab, BoardViewSettings, DEFAULT_SETTINGS } from 'Base/S
 import { Plugin, QueryController } from 'obsidian';
 import { getPropertyKeyFromId } from 'Utils';
 import { BoardViewRenderer } from 'Views/BoardViewRenderer';
+import { IconPickerModal } from 'Views/IconPickerModal';
 import { BoardOptionKeys } from 'Views/OptionsExtractor';
 import Services from './Base/Services';
 
@@ -21,6 +22,13 @@ export default class BoardViewPlugin extends Plugin {
 
 		// Initialize plugin UI (ribbon icons, commands)
 		PluginInterface.initialize();
+
+		// Icon picker command
+		this.addCommand({
+			id: 'browse-icons',
+			name: 'Browse icons',
+			callback: () => new IconPickerModal(this.app).open(),
+		});
 
 		// Add settings tab
 		this.addSettingTab(new BoardViewSettingTab(this.app, this));
@@ -51,6 +59,13 @@ export default class BoardViewPlugin extends Plugin {
 							filter: (prop: string) => Services.plugin.isPropertyEligibleForGrouping(prop),
 							default: '',
 							description: 'Enter the property ID to display as card icon',
+						},
+						{
+							type: 'multitext',
+							displayName: 'Icon mapping',
+							key: BoardOptionKeys.ICON_MAPPING,
+							default: [],
+							description: 'Map property values to icon names. Format: value=icon-name (e.g. bug=bug, feature=sparkles). Use "Board View: Browse icons" command to search icons.',
 						},
 						{
 							type: 'property',
