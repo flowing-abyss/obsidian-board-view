@@ -1,4 +1,4 @@
-import { BasesEntry, Menu, Modal, WorkspaceLeaf } from 'obsidian';
+import { BasesEntry, Menu, Modal, Notice, WorkspaceLeaf } from 'obsidian';
 import { InternalWorkspace } from 'Types/Internal';
 import Services from '../Base/Services';
 import { getPropertyKeyFromId } from 'Utils';
@@ -134,6 +134,7 @@ export class CardView {
                     evt.preventDefault();
                     evt.stopPropagation();
                     navigator.clipboard.writeText(idText);
+                    new Notice(`Copied: ${idText}`, 1500);
                 });
 
                 // Right click — edit value
