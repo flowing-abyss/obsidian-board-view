@@ -98,13 +98,15 @@ export class PropertyView {
             }
 
             // Supercharged Links: apply data-link-* from target file's frontmatter.
-            // Obsidian's link widget renders pills as div.internal-link[data-href],
-            // so we use a broad attribute selector instead of restricting to <a>.
-            for (const link of Array.from(child.querySelectorAll<HTMLElement>('[data-href]'))) {
-                const href = link.getAttribute('data-href') || '';
-                if (!href) continue;
-                applySlAttributes(link, href, entry.file.path);
-            }
+            // Widget renders async, so we defer the scan to let the DOM settle.
+            const sourcePath = entry.file.path;
+            requestAnimationFrame(() => {
+                for (const link of Array.from(child.querySelectorAll<HTMLElement>('[data-href]'))) {
+                    const href = link.getAttribute('data-href') || '';
+                    if (!href) continue;
+                    applySlAttributes(link, href, sourcePath);
+                }
+            });
         }
 
         return propEl;
