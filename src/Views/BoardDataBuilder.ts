@@ -120,12 +120,15 @@ export class BoardViewDataBuilder {
         }
 
         // 2. Create Columns and Rows (Sorted)
+        const groupLabels = options.groupLabels || {};
+        const subGroupLabels = options.subGroupLabels || {};
+
         const sortedGroupKeys = this.sortGroups(Array.from(groupValues.keys()), options.groupOrder);
         for (const key of sortedGroupKeys) {
             if (!hiddenGroups.has(key)) {
                 columns.push({
                     id: key,
-                    title: key,
+                    title: groupLabels[key] || key,
                     rawValue: groupValues.get(key),
                     count: 0
                 });
@@ -138,7 +141,7 @@ export class BoardViewDataBuilder {
             if (!hiddenSubGroups.has(key)) {
                 rows.push({
                     id: key,
-                    title: key,
+                    title: subGroupLabels[key] || key,
                     rawValue: subGroupValues.get(key),
                     count: 0
                 });
