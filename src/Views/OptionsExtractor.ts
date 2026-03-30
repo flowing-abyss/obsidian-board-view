@@ -18,6 +18,8 @@ export const BoardOptionKeys = {
     HIDDEN_GROUPS: 'hiddenGroups',
     HIDDEN_SUB_GROUPS: 'hiddenSubGroups',
     HIDE_IMAGE_PLACEHOLDER: 'hideImagePlaceholder',
+    NEW_NOTE_FOLDER: 'newNoteFolder',
+    NEW_NOTE_TEMPLATE: 'newNoteTemplate',
 
     // Color Options (simplified)
     COLOR_HEADERS: 'colorHeaders',
@@ -41,6 +43,8 @@ export interface BoardOptions {
     hiddenGroups?: string[];
     hiddenSubGroups?: string[];
     hideImagePlaceholder?: boolean;
+    newNoteFolder?: string;
+    newNoteTemplate?: string;
 
     // Color Options
     colorHeaders?: boolean;
@@ -102,6 +106,8 @@ export class OptionsExtractor {
         options.hiddenGroups = (this.config.get(BoardOptionKeys.HIDDEN_GROUPS) as string[]) || [];
         options.hiddenSubGroups = (this.config.get(BoardOptionKeys.HIDDEN_SUB_GROUPS) as string[]) || [];
         options.hideImagePlaceholder = (this.config.get(BoardOptionKeys.HIDE_IMAGE_PLACEHOLDER) as boolean) || false;
+        options.newNoteFolder = ((this.config.get(BoardOptionKeys.NEW_NOTE_FOLDER) as string[]) || [])[0] || '';
+        options.newNoteTemplate = ((this.config.get(BoardOptionKeys.NEW_NOTE_TEMPLATE) as string[]) || [])[0] || '';
 
         // Color Options
         options.colorHeaders = (this.config.get(BoardOptionKeys.COLOR_HEADERS) as boolean) || true;
