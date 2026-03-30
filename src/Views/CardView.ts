@@ -113,6 +113,23 @@ export class CardView {
             }
         }
 
+        // ID badge above title
+        if (this.options.idProperty) {
+            const idValue = entry.getValue(this.options.idProperty);
+            if (idValue?.isTruthy()) {
+                const idText = idValue.toString();
+                const idEl = document.createElement('div');
+                idEl.classList.add('card-id');
+                idEl.textContent = idText;
+                idEl.addEventListener('click', (evt) => {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                    navigator.clipboard.writeText(idText);
+                });
+                card.appendChild(idEl);
+            }
+        }
+
         // create PropertyView helper
         const propertyView = new PropertyView({
             options: this.options
