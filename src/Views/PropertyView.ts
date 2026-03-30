@@ -4,6 +4,12 @@ import { BasesEntry, BasesPropertyId, RenderContext, setIcon } from 'obsidian';
 import Services from '../Base/Services';
 import { BoardOptions } from './OptionsExtractor';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getSl(): any {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (Services.app as any).plugins?.plugins?.['supercharged-links-obsidian'] ?? null;
+}
+
 export interface PropertyViewContext {
     options?: BoardOptions;
 }
@@ -97,34 +103,17 @@ export class PropertyView {
                 (widget as { render: (el: HTMLElement, value: unknown, context: unknown) => void; }).render(child, propertyValue, context);
             }
 
-            // Supercharged Links: apply data-link-* from target file's frontmatter.
-            // Widget renders async, so we defer the scan to let the DOM settle.
-            const sourcePath = entry.file.path;
-            requestAnimationFrame(() => {
-                for (const link of Array.from(child.querySelectorAll<HTMLElement>('[data-href]'))) {
-                    const href = link.getAttribute('data-href') || '';
-                    if (!href) continue;
-                    applySlAttributes(link, href, sourcePath);
-                }
-            });
+            // Let Supercharged Links process any link pills the widget rendered.
+            // Widget renders are async (rAF/timeout), so we give a short delay then
+            // call SL's own updateContainer() — it applies data-link-* attrs exactly
+            // as it would for any other Obsidian view.
+            const sl = getSl();
+            if (sl && typeof sl.updateContainer === 'function') {
+                setTimeout(() => sl.updateContainer(child, sl, '[data-href]'), 50);
+            }
         }
 
         return propEl;
     }
 }
 
-function applySlAttributes(link: HTMLElement, href: string, sourcePath: string): void {
-    const target = Services.app.metadataCache.getFirstLinkpathDest(href, sourcePath);
-    if (!target) return;
-    const fm = Services.app.metadataCache.getCache(target.path)?.frontmatter;
-    if (!fm) return;
-    link.classList.add('data-link-icon', 'data-link-icon-after', 'data-link-text');
-    for (const [key, val] of Object.entries(fm)) {
-        if (key === 'position') continue;
-        if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
-            const strVal = String(val);
-            link.setAttribute(`data-link-${key}`, strVal);
-            link.style.setProperty(`--data-link-${key}`, strVal);
-        }
-    }
-}

@@ -29,6 +29,15 @@ export class BoardViewRenderer extends BasesView {
         this.board = new BoardView(boardContainer);
         this.noteCreator = new BoardNoteCreator();
         this.hookSuperchargedLinks(boardContainer);
+
+        // Re-render when the board becomes visible (handles embed case where SL may
+        // have cleared attrs while the tab was inactive). registerEvent ensures cleanup.
+        this.registerEvent(Services.app.workspace.on('active-leaf-change', () => {
+            const activeLeafEl = Services.app.workspace.activeLeaf?.view?.containerEl;
+            if (activeLeafEl?.contains(boardContainer)) {
+                this.render();
+            }
+        }));
     }
 
     // Called by Obsidian when Bases data changes
@@ -54,6 +63,15 @@ export class BoardViewRenderer extends BasesView {
             onRenameSubGroup: (s, l) => this.openRenameModal(s, l, true),
         };
         this.board.render(boardData, callbacks);
+        this.updateSlContainer();
+    }
+
+    private updateSlContainer(): void {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const sl = (Services.app as any).plugins?.plugins?.['supercharged-links-obsidian'];
+        if (!sl || typeof sl.updateContainer !== 'function') return;
+        // Widget renders (link pills) are async — wait for them before asking SL to process
+        setTimeout(() => sl.updateContainer(this.containerEl, sl, '[data-href]'), 100);
     }
 
     private extractOptions(): BoardOptions {
