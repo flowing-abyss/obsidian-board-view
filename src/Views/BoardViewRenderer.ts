@@ -9,14 +9,18 @@ import { BoardOptionKeys, BoardOptions, OptionsExtractor } from './OptionsExtrac
 
 export const EMPTY_GROUP_VALUE = 'Empty Group';
 
+let instanceCounter = 0;
+
 export class BoardViewRenderer extends BasesView {
     readonly type = BASES_VIEW_ID;
+    private readonly slWatchId: string;
     private containerEl: HTMLElement;
     public controller: QueryController;
     private board: BoardView;
     private noteCreator: BoardNoteCreator;
     constructor(controller: QueryController, parentEl: HTMLElement) {
         super(controller);
+        this.slWatchId = `board-view-${++instanceCounter}`;
         this.controller = controller;
         this.containerEl = parentEl.createDiv('board-view');
         const boardContainer = this.containerEl.createDiv('board-board-container');
@@ -24,6 +28,7 @@ export class BoardViewRenderer extends BasesView {
         // Initialize BoardView
         this.board = new BoardView(boardContainer);
         this.noteCreator = new BoardNoteCreator();
+        this.hookSuperchargedLinks(boardContainer);
     }
 
     // Called by Obsidian when Bases data changes
@@ -168,6 +173,19 @@ export class BoardViewRenderer extends BasesView {
             this.config.set(key, filtered);
         });
         modal.open();
+    }
+
+    private hookSuperchargedLinks(container: HTMLElement): void {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const sl = (Services.app as any).plugins?.plugins?.['supercharged-links-obsidian'];
+        if (!sl || typeof sl._watchContainerDynamic !== 'function') return;
+        sl._watchContainerDynamic(
+            this.slWatchId,
+            container,
+            sl,
+            '.internal-link',
+            'board-card',
+        );
     }
 
     private handleNewNoteClick(groupValue: unknown, subGroupValue?: unknown): void {
