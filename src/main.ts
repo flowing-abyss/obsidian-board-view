@@ -193,6 +193,26 @@ export default class BoardViewPlugin extends Plugin {
 						}
 					]
 				},
+				{
+					type: 'group',
+					displayName: 'New Note',
+					items: [
+						{
+							type: 'multitext',
+							displayName: 'Folder',
+							key: BoardOptionKeys.NEW_NOTE_FOLDER,
+							default: [],
+							description: 'Folder path for new notes (e.g. Projects/Tasks)',
+						},
+						{
+							type: 'multitext',
+							displayName: 'Template',
+							key: BoardOptionKeys.NEW_NOTE_TEMPLATE,
+							default: [],
+							description: 'Template file path. Supports Templater if installed (e.g. Templates/Task.md)',
+						},
+					]
+				},
 			]),
 		});
 	}

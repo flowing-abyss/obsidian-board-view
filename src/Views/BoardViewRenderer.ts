@@ -194,7 +194,8 @@ export class BoardViewRenderer extends BasesView {
             groupValue,
             subGroupValue,
             options.groupProperty,
-            options.subGroupProperty
+            options.subGroupProperty,
+            options
         );
     }
 
