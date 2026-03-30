@@ -41,10 +41,14 @@ export class PropertyView {
                 // Create container for icon + file name
                 propEl.classList.add('board-card-file-name-container');
 
+                // Resolve icon name through mapping (fallback to raw value)
+                const rawIconValue = iconVal.toString();
+                const iconName = this.options?.iconMapping?.[rawIconValue] ?? rawIconValue;
+
                 // Create icon element
                 const iconEl = document.createElement('span');
                 iconEl.classList.add('board-card-icon');
-                setIcon(iconEl, iconVal.toString());
+                setIcon(iconEl, iconName);
 
                 // Create file name element
                 const fileNameEl = document.createElement('div');

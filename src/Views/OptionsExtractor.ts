@@ -23,6 +23,9 @@ export const BoardOptionKeys = {
     NEW_NOTE_TEMPLATE: 'newNoteTemplate',
     NEW_NOTE_OPEN: 'newNoteOpen',
 
+    // Icon mapping
+    ICON_MAPPING: 'iconMapping',
+
     // Color Options (simplified)
     COLOR_HEADERS: 'colorHeaders',
     COLOR_CELLS: 'colorCells',
@@ -49,6 +52,9 @@ export interface BoardOptions {
     newNoteFolder?: string;
     newNoteTemplate?: string;
     newNoteOpen?: boolean;
+
+    // Icon mapping: property value → lucide icon name
+    iconMapping?: Record<string, string>;
 
     // Color Options
     colorHeaders?: boolean;
@@ -114,6 +120,8 @@ export class OptionsExtractor {
         options.newNoteFolder = ((this.config.get(BoardOptionKeys.NEW_NOTE_FOLDER) as string[]) || [])[0] || '';
         options.newNoteTemplate = ((this.config.get(BoardOptionKeys.NEW_NOTE_TEMPLATE) as string[]) || [])[0] || '';
         options.newNoteOpen = (this.config.get(BoardOptionKeys.NEW_NOTE_OPEN) as boolean) || false;
+
+        options.iconMapping = parseLabels((this.config.get(BoardOptionKeys.ICON_MAPPING) as string[]) || []);
 
         // Color Options
         options.colorHeaders = (this.config.get(BoardOptionKeys.COLOR_HEADERS) as boolean) || true;
